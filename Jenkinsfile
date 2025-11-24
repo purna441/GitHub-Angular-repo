@@ -3,41 +3,36 @@ pipeline {
 
     stages {
 
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                git branch: 'main',
-                    credentialsId: 'github-credentials',
-                    url: 'https://github.com/purna441/GitHub-Angular-repo.git'
+                git branch: 'main', url: 'https://github.com/purna441/GitHub-Angular-repo.git'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Install Node & Angular CLI') {
             steps {
                 sh '''
-                    npm install            
+                    npm install
                     npm install @angular/cli --save-dev
-                    '''
-                   
-                }
+                '''
             }
         }
 
         stage('Build Angular App') {
             steps {
-                dir('AngularApp') {
-                    sh 'npm install'sh 'npm install @angular/cli --save-dev'
-                    
-                    
+                sh 'ng build --configuration production'
+            }
+        }
+
+        stage('Upload to S3') {
+            steps {
+                withAWS(credentials: 'b334beda-c2eb-48b9-b8e4-237e02d4b5ce', region: 'ap-south-1') {
+                    s3Upload bucket: 'pp-jenkins-angular',
+                            includePathPattern: 'dist/**/*',
+                            workingDir: 'dist/my-angular-app'
                 }
             }
         }
 
-        stage('Upload to S3 Bucket') {
-            steps {
-                sh '''
-                aws s3 sync AngularApp/dist/angular-app s3://pp-jenkins-angular/ --delete
-                '''
-            }
-        }
     }
 }
