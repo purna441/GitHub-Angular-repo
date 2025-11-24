@@ -5,14 +5,6 @@ pipeline {
         AWS_DEFAULT_REGION = "ap-south-1"
     }
 
-    stages {
-
-        stage('Checkout Code') {
-            steps {
-                git branch: 'main', url: 'https://github.com/purna441/https://github.com/purna441/GitHub-Angular-repo.git'
-            }
-        }
-
         stage('Install Node & Angular CLI') {
             steps {
                 sh '''
@@ -47,7 +39,7 @@ hariprasadmanigandla/ --delete
                 }
             }
         }
-    }
+    
 
     post {
         success {
