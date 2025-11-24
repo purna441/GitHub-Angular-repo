@@ -11,16 +11,11 @@ pipeline {
             }
         }
 
-        stage('Install Node & Angular CLI') {
-            steps {
-                sh 'npm install -g @angular/cli'
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
                 dir('AngularApp') {
-                    sh 'npm install'
+                    sh 'npm install'            // installs local node_modules
+                    sh 'npm install @angular/cli --save-dev'   // install Angular CLI locally
                 }
             }
         }
@@ -28,7 +23,7 @@ pipeline {
         stage('Build Angular App') {
             steps {
                 dir('AngularApp') {
-                    sh 'npx ng build --configuration production'
+                    sh './node_modules/.bin/ng build --configuration production'
                 }
             }
         }
@@ -36,7 +31,7 @@ pipeline {
         stage('Upload to S3 Bucket') {
             steps {
                 sh '''
-                aws s3 sync AngularApp/dist/angular-app-name s3://pp-jenkins-angular/ --delete
+                aws s3 sync AngularApp/dist/angular-app s3://pp-jenkins-angular/ --delete
                 '''
             }
         }
