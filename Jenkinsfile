@@ -39,9 +39,9 @@ pipeline {
 
         stage('Upload to S3 Bucket') {
             steps {
-                withAWS(credentials: 'aws-creds') {
+                withAWS(credentials: 'b334beda-c2eb-48b9-b8e4-237e02d4b5ce') {
                     sh '''
-                        aws s3 sync dist/YOUR_PROJECT_NAME s3://
+                        aws s3 sync dist/pp-jenkins-angular s3://
 hariprasadmanigandla/ --delete
                     '''
                 }
