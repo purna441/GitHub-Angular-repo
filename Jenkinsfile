@@ -16,6 +16,8 @@ pipeline {
                 dir('AngularApp') {
                     sh 'npm install'            // installs local node_modules
                     sh 'npm install @angular/cli --save-dev'   // install Angular CLI locally
+                    sh './node_modules/.bin/ng build --configuration production'
+                   
                 }
             }
         }
@@ -23,7 +25,9 @@ pipeline {
         stage('Build Angular App') {
             steps {
                 dir('AngularApp') {
-                    sh './node_modules/.bin/ng build --configuration production'
+                    sh 'npm install'sh 'npm install @angular/cli --save-dev'
+                    
+                    
                 }
             }
         }
