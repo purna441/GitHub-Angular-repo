@@ -9,27 +9,32 @@ pipeline {
             }
         }
 
-        stage('Install Node & Angular CLI') {
+        stage('Install Dependencies') {
             steps {
-                sh '''
-                    npm install
-                    npm install @angular/cli --save-dev
-                '''
+                dir('my-angular-app') {
+                    sh '''
+                        npm install
+                        npm install @angular/cli --save-dev
+                    '''
+                }
             }
         }
 
         stage('Build Angular App') {
             steps {
-                sh 'ng build --configuration production'
+                dir('my-angular-app') {
+                    sh 'ng build --configuration production'
+                }
             }
         }
 
         stage('Upload to S3') {
             steps {
-                withAWS(credentials: 'b334beda-c2eb-48b9-b8e4-237e02d4b5ce', region: 'ap-south-1') {
-                    s3Upload bucket: 'pp-jenkins-angular',
-                            includePathPattern: 'dist/**/*',
-                            workingDir: 'dist/my-angular-app'
+                dir('my-angular-app/dist/my-angular-app') {
+                    withAWS(credentials: 'b334beda-c2eb-48b9-b8e4-237e02d4b5ce', region: 'ap-south-1') {
+                        s3Upload bucket: 'pp-jenkins-angular',
+                                 includePathPattern: '**/*'
+                    }
                 }
             }
         }
